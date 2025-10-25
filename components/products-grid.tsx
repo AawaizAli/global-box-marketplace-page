@@ -5,6 +5,7 @@ import { Search, ChevronDown, X, Share2, Heart, ShoppingCart } from "lucide-reac
 
 interface Product {
   id: number
+  title: string
   image: string
   vendor: string
   city: string
@@ -23,8 +24,9 @@ interface Product {
 const PRODUCTS: Product[] = [
   {
     id: 1,
+    title: "Industrial Electronics Module",
     image: "/electronics-product.jpg",
-    vendor: "VENDOR",
+    vendor: "TechVision Industries",
     city: "ABBOTSFORD",
     region: "BRITISH COLUMBIA",
     country: "CANADA",
@@ -39,8 +41,9 @@ const PRODUCTS: Product[] = [
   },
   {
     id: 2,
+    title: "Premium Textile Fabric Roll",
     image: "/textile-product.jpg",
-    vendor: "VENDOR",
+    vendor: "Global Textile Co.",
     city: "MITCHAM",
     region: "COVENT GARDEN",
     country: "UNITED KINGDOM",
@@ -55,8 +58,9 @@ const PRODUCTS: Product[] = [
   },
   {
     id: 3,
+    title: "Manufacturing Equipment Part",
     image: "/manufacturing-product.jpg",
-    vendor: "VENDOR",
+    vendor: "Premier Manufacturing Ltd.",
     city: "SHANGHAI",
     region: "SHANGHAI",
     country: "CHINA",
@@ -71,8 +75,9 @@ const PRODUCTS: Product[] = [
   },
   {
     id: 4,
+    title: "Retail Solutions Package",
     image: "/retail-product.jpg",
-    vendor: "VENDOR",
+    vendor: "Retail Solutions Inc.",
     city: "TORONTO",
     region: "ONTARIO",
     country: "CANADA",
@@ -87,8 +92,9 @@ const PRODUCTS: Product[] = [
   },
   {
     id: 5,
+    title: "Fashion Forward Collection",
     image: "/diverse-fashion-display.png",
-    vendor: "VENDOR",
+    vendor: "Fashion Forward Ltd.",
     city: "LONDON",
     region: "GREATER LONDON",
     country: "UNITED KINGDOM",
@@ -103,8 +109,9 @@ const PRODUCTS: Product[] = [
   },
   {
     id: 6,
+    title: "Organic Harvest Products",
     image: "/agriculture-product.jpg",
-    vendor: "VENDOR",
+    vendor: "Organic Harvest Group",
     city: "SYDNEY",
     region: "NEW SOUTH WALES",
     country: "AUSTRALIA",
@@ -119,8 +126,9 @@ const PRODUCTS: Product[] = [
   },
   {
     id: 7,
+    title: "ElectroTech Premium Device",
     image: "/electronics-premium.jpg",
-    vendor: "VENDOR",
+    vendor: "ElectroTech Premium",
     city: "TOKYO",
     region: "TOKYO",
     country: "JAPAN",
@@ -135,8 +143,9 @@ const PRODUCTS: Product[] = [
   },
   {
     id: 8,
+    title: "Luxury Goods International",
     image: "/retail-luxury.jpg",
-    vendor: "VENDOR",
+    vendor: "Luxury Goods International",
     city: "DUBAI",
     region: "DUBAI",
     country: "UNITED ARAB EMIRATES",
@@ -151,8 +160,9 @@ const PRODUCTS: Product[] = [
   },
   {
     id: 9,
-    vendor: "VENDOR",
+    title: "Singapore Industrial Supply",
     image: "/manufacturing-industrial.jpg",
+    vendor: "Singapore Industrial Corp.",
     city: "SINGAPORE",
     region: "SINGAPORE",
     country: "SINGAPORE",
@@ -352,10 +362,14 @@ export default function ProductsGrid() {
               key={product.id}
               className="bg-card border border-border rounded-lg overflow-hidden hover:shadow-lg hover:border-primary/50 transition-all duration-300 group flex flex-col"
             >
-              <div className="relative w-full h-48 bg-muted overflow-hidden">
+              <div className="px-6 pt-6 pb-3">
+                <h3 className="text-center text-sm font-bold text-foreground line-clamp-1">{product.title}</h3>
+              </div>
+
+              <div className="relative w-full aspect-square bg-muted overflow-hidden mb-6 rounded-lg">
                 <img
                   src={product.image || "/placeholder.svg"}
-                  alt={`${product.city} product`}
+                  alt={product.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
                 <button
@@ -372,19 +386,39 @@ export default function ProductsGrid() {
               </div>
 
               {/* Product Content */}
-              <div className="p-6 flex flex-col flex-grow">
+              <div className="px-6 flex flex-col flex-grow">
                 {/* Product Header */}
                 <div className="mb-4 pb-4 border-b border-border">
                   <p className="text-xs font-bold text-muted-foreground tracking-widest mb-2">VENDOR:</p>
-                  <p className="text-sm font-semibold text-foreground">{product.vendor}</p>
+                  <p
+                    className="text-sm font-semibold text-foreground cursor-help hover:text-primary transition-colors"
+                    title="Find products posted by this vendor"
+                  >
+                    {product.vendor}
+                  </p>
                 </div>
 
                 {/* Location Information */}
                 <div className="space-y-2 mb-4 pb-4 border-b border-border">
-                  <p className="text-lg font-bold text-foreground">{product.city}</p>
+                  <p
+                    className="text-lg font-bold text-foreground cursor-help hover:text-primary transition-colors"
+                    title={`Find products posted in ${product.city}`}
+                  >
+                    {product.city}
+                  </p>
                   <p className="text-sm text-muted-foreground">{product.region}</p>
-                  <p className="text-sm text-muted-foreground">{product.country}</p>
-                  <p className="text-xs font-mono text-muted-foreground">POST CODE: {product.postCode}</p>
+                  <p
+                    className="text-sm text-muted-foreground cursor-help hover:text-primary transition-colors"
+                    title={`Find products posted in ${product.country}`}
+                  >
+                    {product.country}
+                  </p>
+                  <p
+                    className="text-xs font-mono text-muted-foreground cursor-help hover:text-primary transition-colors"
+                    title={`Find products with postal code ${product.postCode}`}
+                  >
+                    POST CODE: {product.postCode}
+                  </p>
                 </div>
 
                 <div className="space-y-2 mb-4 pb-4 border-b border-border">
@@ -408,7 +442,7 @@ export default function ProductsGrid() {
                   <p className="text-sm font-bold text-foreground">{product.memberSince}</p>
                 </div>
 
-                <div className="flex gap-2 mt-auto">
+                <div className="flex gap-2 mt-auto mb-6">
                   <button
                     className="flex-1 flex items-center justify-center gap-2 px-3 py-2 border border-border rounded-lg font-medium hover:bg-muted transition-colors text-sm"
                     aria-label="Share product"
