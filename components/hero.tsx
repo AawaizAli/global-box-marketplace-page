@@ -99,14 +99,16 @@ export default function Hero({ country, isDarkMode }: HeroProps) {
         <div className="flex gap-4 flex-wrap justify-center animate-fade-in" style={{ animationDelay: "0.4s" }}>
           <a
             href="#services"
-            className="group px-8 py-4 bg-primary text-primary-foreground rounded-lg font-semibold hover:shadow-lg hover:shadow-primary/50 transition-all duration-300 transform hover:scale-105 flex items-center gap-2"
+            className="group px-8 py-4 bg-gradient-to-r from-primary to-primary/90 text-primary-foreground rounded-2xl font-bold hover:from-primary/90 hover:to-primary hover:shadow-2xl hover:shadow-primary/25 transition-all duration-300 transform hover:scale-105 flex items-center gap-2 shadow-xl border border-primary/20"
+            style={{ boxShadow: '0 10px 30px rgba(34, 190, 192, 0.3), 0 4px 15px rgba(34, 190, 192, 0.2)' }}
           >
             <Play className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             {t('globalServices')}
           </a>
           <a
             href="#promotions"
-            className="px-8 py-4 border-2 border-primary text-primary rounded-lg font-semibold hover:bg-primary hover:text-primary-foreground transition-all duration-300 transform hover:scale-105"
+            className="group px-8 py-4 bg-gradient-to-r from-white via-white to-gray-50/50 text-primary rounded-2xl font-bold hover:from-primary hover:to-primary/90 hover:text-primary-foreground hover:shadow-2xl hover:shadow-primary/25 transition-all duration-300 transform hover:scale-105 border-2 border-primary/30 shadow-xl"
+            style={{ boxShadow: '0 10px 30px rgba(0,0,0,0.15), 0 4px 15px rgba(0,0,0,0.08)' }}
           >
             {t('globalPromotions')}
           </a>
