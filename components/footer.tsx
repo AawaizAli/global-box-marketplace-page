@@ -1,18 +1,26 @@
 "use client"
 
-import { Twitter, Instagram, Linkedin, Facebook, Youtube, Mail, Phone } from "lucide-react"
+import { Twitter, Instagram, Linkedin, Facebook, Youtube, Mail, Phone, MapPin, Globe, Award, Shield } from "lucide-react"
 import { useTranslation } from "@/hooks/use-translation"
 
 export default function Footer() {
   const { t } = useTranslation()
   return (
-    <footer className="bg-card border-t border-border mt-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <footer className="relative bg-gradient-to-br from-card via-card/95 to-card/90 border-t border-border/50 mt-20 overflow-hidden">
+      {/* Decorative Background Elements */}
+      <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-primary via-accent to-primary opacity-60"></div>
+      <div className="absolute -top-4 -right-4 w-24 h-24 bg-primary/10 rounded-full blur-xl"></div>
+      <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-accent/10 rounded-full blur-xl"></div>
+      
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         {/* Partner Line */}
-        <div className="text-center mb-12 pb-8 border-b border-border">
-          <p className="text-sm font-semibold text-muted-foreground">
-            {t('officialPartner')}
-          </p>
+        <div className="text-center mb-12 pb-8 border-b border-border/50">
+          <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10 rounded-2xl px-6 py-3 backdrop-blur-sm border border-primary/20">
+            <Award className="w-5 h-5 text-primary" />
+            <p className="text-sm font-bold text-foreground">
+              {t('officialPartner')}
+            </p>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
