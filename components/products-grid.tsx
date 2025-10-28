@@ -1,5 +1,7 @@
 "use client"
 
+import type React from "react"
+
 import { useState, useMemo } from "react"
 import { Search, ChevronDown, X, Share2, Heart, ShoppingCart } from "lucide-react"
 
@@ -19,6 +21,11 @@ interface Product {
   memberSince: number
   category: string
   segment: string
+}
+
+interface TooltipState {
+  type: "vendor" | "city" | "country" | "postCode" | null
+  productId: number | null
 }
 
 const PRODUCTS: Product[] = [
@@ -179,12 +186,51 @@ const PRODUCTS: Product[] = [
 
 const ITEMS_PER_PAGE = 6
 
+// Helper functions to count products by filter criteria
+const getProductCountByVendor = (vendor: string, products: Product[]) => {
+  return products.filter((p) => p.vendor === vendor).length
+}
+
+const getProductCountByCity = (city: string, products: Product[]) => {
+  return products.filter((p) => p.city === city).length
+}
+
+const getProductCountByCountry = (country: string, products: Product[]) => {
+  return products.filter((p) => p.country === country).length
+}
+
+const getProductCountByPostCode = (postCode: string, products: Product[]) => {
+  return products.filter((p) => p.postCode === postCode).length
+}
+
+// Tooltip component
+const Tooltip = ({
+  text,
+  children,
+  isVisible,
+}: {
+  text: string
+  children: React.ReactNode
+  isVisible: boolean
+}) => (
+  <div className="relative inline-block w-full">
+    {children}
+    {isVisible && (
+      <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-primary text-primary-foreground text-xs font-medium rounded-lg whitespace-nowrap z-50 shadow-lg">
+        {text}
+        <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-primary"></div>
+      </div>
+    )}
+  </div>
+)
+
 export default function ProductsGrid() {
   const [searchTerm, setSearchTerm] = useState("")
   const [marketSegment, setMarketSegment] = useState("")
   const [sortBy, setSortBy] = useState("")
   const [currentPage, setCurrentPage] = useState(1)
   const [wishlist, setWishlist] = useState<number[]>([])
+  const [tooltip, setTooltip] = useState<TooltipState>({ type: null, productId: null })
 
   const filteredAndSortedProducts = useMemo(() => {
     let results = PRODUCTS
@@ -390,35 +436,59 @@ export default function ProductsGrid() {
                 {/* Product Header */}
                 <div className="mb-4 pb-4 border-b border-border">
                   <p className="text-xs font-bold text-muted-foreground tracking-widest mb-2">VENDOR:</p>
-                  <p
-                    className="text-sm font-semibold text-foreground cursor-help hover:text-primary transition-colors"
-                    title="Find products posted by this vendor"
+                  <Tooltip
+                    text={`Show ${getProductCountByVendor(product.vendor, PRODUCTS)} products posted by this vendor`}
+                    isVisible={tooltip.type === "vendor" && tooltip.productId === product.id}
                   >
-                    {product.vendor}
-                  </p>
+                    <p
+                      className="text-sm font-semibold text-foreground cursor-help hover:text-primary transition-colors"
+                      onMouseEnter={() => setTooltip({ type: "vendor", productId: product.id })}
+                      onMouseLeave={() => setTooltip({ type: null, productId: null })}
+                    >
+                      {product.vendor}
+                    </p>
+                  </Tooltip>
                 </div>
 
                 {/* Location Information */}
                 <div className="space-y-2 mb-4 pb-4 border-b border-border">
-                  <p
-                    className="text-lg font-bold text-foreground cursor-help hover:text-primary transition-colors"
-                    title={`Find products posted in ${product.city}`}
+                  <Tooltip
+                    text={`Show ${getProductCountByCity(product.city, PRODUCTS)} products posted in ${product.city}`}
+                    isVisible={tooltip.type === "city" && tooltip.productId === product.id}
                   >
-                    {product.city}
-                  </p>
+                    <p
+                      className="text-lg font-bold text-foreground cursor-help hover:text-primary transition-colors"
+                      onMouseEnter={() => setTooltip({ type: "city", productId: product.id })}
+                      onMouseLeave={() => setTooltip({ type: null, productId: null })}
+                    >
+                      {product.city}
+                    </p>
+                  </Tooltip>
                   <p className="text-sm text-muted-foreground">{product.region}</p>
-                  <p
-                    className="text-sm text-muted-foreground cursor-help hover:text-primary transition-colors"
-                    title={`Find products posted in ${product.country}`}
+                  <Tooltip
+                    text={`Show ${getProductCountByCountry(product.country, PRODUCTS)} products posted in ${product.country}`}
+                    isVisible={tooltip.type === "country" && tooltip.productId === product.id}
                   >
-                    {product.country}
-                  </p>
-                  <p
-                    className="text-xs font-mono text-muted-foreground cursor-help hover:text-primary transition-colors"
-                    title={`Find products with postal code ${product.postCode}`}
+                    <p
+                      className="text-sm text-muted-foreground cursor-help hover:text-primary transition-colors"
+                      onMouseEnter={() => setTooltip({ type: "country", productId: product.id })}
+                      onMouseLeave={() => setTooltip({ type: null, productId: null })}
+                    >
+                      {product.country}
+                    </p>
+                  </Tooltip>
+                  <Tooltip
+                    text={`Show ${getProductCountByPostCode(product.postCode, PRODUCTS)} products with postal code ${product.postCode}`}
+                    isVisible={tooltip.type === "postCode" && tooltip.productId === product.id}
                   >
-                    POST CODE: {product.postCode}
-                  </p>
+                    <p
+                      className="text-xs font-mono text-muted-foreground cursor-help hover:text-primary transition-colors"
+                      onMouseEnter={() => setTooltip({ type: "postCode", productId: product.id })}
+                      onMouseLeave={() => setTooltip({ type: null, productId: null })}
+                    >
+                      POST CODE: {product.postCode}
+                    </p>
+                  </Tooltip>
                 </div>
 
                 <div className="space-y-2 mb-4 pb-4 border-b border-border">
