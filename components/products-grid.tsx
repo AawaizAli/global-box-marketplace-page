@@ -221,7 +221,7 @@ const Tooltip = ({
   mouseX: number
   mouseY: number
 }) => (
-  <div className="relative inline-block w-full">
+  <div className="relative block">
     {children}
     {isVisible && (
       <div
