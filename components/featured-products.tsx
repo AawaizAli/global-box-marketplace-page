@@ -1,7 +1,7 @@
 "use client"
 
-import { useState } from "react"
-import { ChevronLeft, ChevronRight, Heart, Share2 } from "lucide-react"
+import { useState, useEffect, useRef } from "react"
+import { ChevronLeft, ChevronRight, Heart, Share2, Play, Pause } from "lucide-react"
 import { useTranslation } from "@/hooks/use-translation"
 
 interface FeaturedProduct {
@@ -32,13 +32,53 @@ for (let i = 0; i < FEATURED_PRODUCTS.length; i += PRODUCTS_PER_SLIDE) {
 export default function FeaturedProducts() {
   const { t } = useTranslation()
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0)
+  const [isTransitioning, setIsTransitioning] = useState(false)
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true)
+  const [isHovered, setIsHovered] = useState(false)
+  const intervalRef = useRef<NodeJS.Timeout | null>(null)
+
+  // Auto-play functionality
+  useEffect(() => {
+    if (isAutoPlaying && !isHovered) {
+      intervalRef.current = setInterval(() => {
+        setCurrentSlideIndex((prev) => (prev === PRODUCT_SLIDES.length - 1 ? 0 : prev + 1))
+      }, 4000) // Change slide every 4 seconds
+    } else {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current)
+        intervalRef.current = null
+      }
+    }
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current)
+      }
+    }
+  }, [isAutoPlaying, isHovered])
+
+  const handleSlideChange = (newIndex: number) => {
+    if (isTransitioning || newIndex === currentSlideIndex) return
+    
+    setIsTransitioning(true)
+    setTimeout(() => {
+      setCurrentSlideIndex(newIndex)
+      setTimeout(() => setIsTransitioning(false), 50)
+    }, 300)
+  }
 
   const handlePrevious = () => {
-    setCurrentSlideIndex((prev) => (prev === 0 ? PRODUCT_SLIDES.length - 1 : prev - 1))
+    const newIndex = currentSlideIndex === 0 ? PRODUCT_SLIDES.length - 1 : currentSlideIndex - 1
+    handleSlideChange(newIndex)
   }
 
   const handleNext = () => {
-    setCurrentSlideIndex((prev) => (prev === PRODUCT_SLIDES.length - 1 ? 0 : prev + 1))
+    const newIndex = currentSlideIndex === PRODUCT_SLIDES.length - 1 ? 0 : currentSlideIndex + 1
+    handleSlideChange(newIndex)
+  }
+
+  const toggleAutoPlay = () => {
+    setIsAutoPlaying(!isAutoPlaying)
   }
 
   const currentSlide = PRODUCT_SLIDES[currentSlideIndex]
@@ -54,7 +94,11 @@ export default function FeaturedProducts() {
       </div>
 
       {/* Modern Curvy Slider Container */}
-      <div className="relative group">
+      <div 
+        className="relative group"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
         {/* Main Slider with Curvy Design */}
         <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-card via-card/95 to-card/90 border border-border/50 shadow-2xl backdrop-blur-sm">
           {/* Decorative Elements */}
@@ -67,10 +111,14 @@ export default function FeaturedProducts() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {currentSlide.map((product: FeaturedProduct, index: number) => (
                 <div 
-                  key={product.id} 
-                  className="group/product relative bg-gradient-to-br from-white via-white to-gray-50/50 rounded-3xl overflow-hidden shadow-2xl hover:shadow-3xl transition-all duration-700 ease-out hover:-translate-y-3 border border-gray-200/40"
+                  key={`${currentSlideIndex}-${product.id}`}
+                  className={`group/product relative bg-gradient-to-br from-white via-white to-gray-50/50 rounded-3xl overflow-hidden shadow-2xl hover:shadow-3xl transition-all duration-700 ease-out hover:-translate-y-3 border border-gray-200/40 ${
+                    isTransitioning ? 'opacity-0 scale-95 translate-y-4' : 'opacity-100 scale-100 translate-y-0'
+                  }`}
                   style={{
                     boxShadow: '0 20px 60px rgba(0,0,0,0.15), 0 8px 30px rgba(0,0,0,0.08)',
+                    animationDelay: `${index * 100}ms`,
+                    animation: isTransitioning ? 'none' : 'slideInUp 0.6s ease-out forwards'
                   }}
                 >
                   {/* Decorative gradient overlay */}
@@ -129,25 +177,44 @@ export default function FeaturedProducts() {
           <div className="absolute top-1/2 left-0 right-0 flex justify-between px-6 -translate-y-1/2 pointer-events-none">
             <button
               onClick={handlePrevious}
-              className="group/btn p-3 bg-white/90 backdrop-blur-md text-primary rounded-2xl hover:bg-white hover:scale-110 transition-all duration-300 pointer-events-auto shadow-xl border border-white/20 hover:shadow-2xl"
+              disabled={isTransitioning}
+              className={`group/btn p-3 bg-white/90 backdrop-blur-md text-primary rounded-2xl hover:bg-white hover:scale-110 transition-all duration-300 pointer-events-auto shadow-xl border border-white/20 hover:shadow-2xl ${
+                isTransitioning ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-primary/20'
+              }`}
               aria-label="Previous product"
             >
-              <ChevronLeft className="w-6 h-6 group-hover/btn:-translate-x-0.5 transition-transform" />
+              <ChevronLeft className="w-6 h-6 group-hover/btn:-translate-x-0.5 transition-transform duration-300" />
             </button>
             <button
               onClick={handleNext}
-              className="group/btn p-3 bg-white/90 backdrop-blur-md text-primary rounded-2xl hover:bg-white hover:scale-110 transition-all duration-300 pointer-events-auto shadow-xl border border-white/20 hover:shadow-2xl"
+              disabled={isTransitioning}
+              className={`group/btn p-3 bg-white/90 backdrop-blur-md text-primary rounded-2xl hover:bg-white hover:scale-110 transition-all duration-300 pointer-events-auto shadow-xl border border-white/20 hover:shadow-2xl ${
+                isTransitioning ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-primary/20'
+              }`}
               aria-label="Next product"
             >
-              <ChevronRight className="w-6 h-6 group-hover/btn:translate-x-0.5 transition-transform" />
+              <ChevronRight className="w-6 h-6 group-hover/btn:translate-x-0.5 transition-transform duration-300" />
             </button>
           </div>
 
           {/* Modern Navigation Indicators */}
           <div className="absolute bottom-6 left-0 right-0 flex justify-center items-center gap-3">
+            {/* Auto-play Toggle */}
+            <button
+              onClick={toggleAutoPlay}
+              className="group/play p-2 bg-white/90 backdrop-blur-md rounded-2xl shadow-lg border border-white/20 hover:bg-white hover:scale-110 transition-all duration-300"
+              aria-label={isAutoPlaying ? "Pause auto-play" : "Start auto-play"}
+            >
+              {isAutoPlaying ? (
+                <Pause className="w-4 h-4 text-primary group-hover/play:text-primary/80 transition-colors" />
+              ) : (
+                <Play className="w-4 h-4 text-primary group-hover/play:text-primary/80 transition-colors" />
+              )}
+            </button>
+
             {/* Page Counter */}
             <div className="flex items-center gap-2 bg-white/90 backdrop-blur-md px-4 py-2 rounded-2xl shadow-lg border border-white/20">
-              <span className="text-xs font-bold text-primary">
+              <span className="text-xs font-bold text-primary transition-colors duration-300">
                 {currentSlideIndex + 1}
               </span>
               <span className="text-xs text-muted-foreground">/</span>
@@ -161,12 +228,13 @@ export default function FeaturedProducts() {
               {PRODUCT_SLIDES.map((_, index) => (
                 <button
                   key={index}
-                  onClick={() => setCurrentSlideIndex(index)}
+                  onClick={() => handleSlideChange(index)}
+                  disabled={isTransitioning}
                   className={`transition-all duration-300 rounded-full ${
                     index === currentSlideIndex 
-                      ? "bg-primary w-8 h-3 shadow-lg" 
+                      ? "bg-primary w-8 h-3 shadow-lg scale-110" 
                       : "bg-white/60 w-3 h-3 hover:bg-white/80 hover:scale-110"
-                  }`}
+                  } ${isTransitioning ? 'opacity-50 cursor-not-allowed' : ''}`}
                   aria-label={`Go to slide ${index + 1}`}
                 />
               ))}
