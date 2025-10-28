@@ -24,7 +24,7 @@ interface Product {
 }
 
 interface TooltipState {
-  type: "vendor" | "city" | "country" | "postCode" | null
+  type: "vendor" | "city" | "region" | "country" | "postCode" | null
   productId: number | null
 }
 
@@ -195,6 +195,10 @@ const getProductCountByCity = (city: string, products: Product[]) => {
   return products.filter((p) => p.city === city).length
 }
 
+const getProductCountByRegion = (region: string, products: Product[]) => {
+  return products.filter((p) => p.region === region).length
+}
+
 const getProductCountByCountry = (country: string, products: Product[]) => {
   return products.filter((p) => p.country === country).length
 }
@@ -208,17 +212,26 @@ const Tooltip = ({
   text,
   children,
   isVisible,
+  mouseX,
+  mouseY,
 }: {
   text: string
   children: React.ReactNode
   isVisible: boolean
+  mouseX: number
+  mouseY: number
 }) => (
   <div className="relative inline-block w-full">
     {children}
     {isVisible && (
-      <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-primary text-primary-foreground text-xs font-medium rounded-lg whitespace-nowrap z-50 shadow-lg">
+      <div
+        className="fixed px-3 py-2 bg-primary text-primary-foreground text-xs font-medium rounded-lg whitespace-nowrap z-50 shadow-lg pointer-events-none"
+        style={{
+          left: `${mouseX + 10}px`,
+          top: `${mouseY - 10}px`,
+        }}
+      >
         {text}
-        <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-primary"></div>
       </div>
     )}
   </div>
@@ -231,6 +244,7 @@ export default function ProductsGrid() {
   const [currentPage, setCurrentPage] = useState(1)
   const [wishlist, setWishlist] = useState<number[]>([])
   const [tooltip, setTooltip] = useState<TooltipState>({ type: null, productId: null })
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
 
   const filteredAndSortedProducts = useMemo(() => {
     let results = PRODUCTS
@@ -280,10 +294,14 @@ export default function ProductsGrid() {
     setWishlist((prev) => (prev.includes(productId) ? prev.filter((id) => id !== productId) : [...prev, productId]))
   }
 
+  const handleMouseMove = (e: React.MouseEvent) => {
+    setMousePos({ x: e.clientX, y: e.clientY })
+  }
+
   const hasActiveFilters = searchTerm || marketSegment || sortBy
 
   return (
-    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16" onMouseMove={handleMouseMove}>
       {/* Section Header */}
       <div className="mb-12">
         <h2 className="text-4xl font-bold tracking-tight mb-2">PRODUCTS</h2>
@@ -439,9 +457,11 @@ export default function ProductsGrid() {
                   <Tooltip
                     text={`Show ${getProductCountByVendor(product.vendor, PRODUCTS)} products posted by this vendor`}
                     isVisible={tooltip.type === "vendor" && tooltip.productId === product.id}
+                    mouseX={mousePos.x}
+                    mouseY={mousePos.y}
                   >
                     <p
-                      className="text-sm font-semibold text-foreground cursor-help hover:text-primary transition-colors"
+                      className="text-sm font-semibold text-foreground cursor-pointer hover:text-primary transition-colors"
                       onMouseEnter={() => setTooltip({ type: "vendor", productId: product.id })}
                       onMouseLeave={() => setTooltip({ type: null, productId: null })}
                     >
@@ -455,22 +475,39 @@ export default function ProductsGrid() {
                   <Tooltip
                     text={`Show ${getProductCountByCity(product.city, PRODUCTS)} products posted in ${product.city}`}
                     isVisible={tooltip.type === "city" && tooltip.productId === product.id}
+                    mouseX={mousePos.x}
+                    mouseY={mousePos.y}
                   >
                     <p
-                      className="text-lg font-bold text-foreground cursor-help hover:text-primary transition-colors"
+                      className="text-lg font-bold text-foreground cursor-pointer hover:text-primary transition-colors"
                       onMouseEnter={() => setTooltip({ type: "city", productId: product.id })}
                       onMouseLeave={() => setTooltip({ type: null, productId: null })}
                     >
                       {product.city}
                     </p>
                   </Tooltip>
-                  <p className="text-sm text-muted-foreground">{product.region}</p>
+                  <Tooltip
+                    text={`Show ${getProductCountByRegion(product.region, PRODUCTS)} products posted in ${product.region}`}
+                    isVisible={tooltip.type === "region" && tooltip.productId === product.id}
+                    mouseX={mousePos.x}
+                    mouseY={mousePos.y}
+                  >
+                    <p
+                      className="text-sm text-muted-foreground cursor-pointer hover:text-primary transition-colors"
+                      onMouseEnter={() => setTooltip({ type: "region", productId: product.id })}
+                      onMouseLeave={() => setTooltip({ type: null, productId: null })}
+                    >
+                      {product.region}
+                    </p>
+                  </Tooltip>
                   <Tooltip
                     text={`Show ${getProductCountByCountry(product.country, PRODUCTS)} products posted in ${product.country}`}
                     isVisible={tooltip.type === "country" && tooltip.productId === product.id}
+                    mouseX={mousePos.x}
+                    mouseY={mousePos.y}
                   >
                     <p
-                      className="text-sm text-muted-foreground cursor-help hover:text-primary transition-colors"
+                      className="text-sm text-muted-foreground cursor-pointer hover:text-primary transition-colors"
                       onMouseEnter={() => setTooltip({ type: "country", productId: product.id })}
                       onMouseLeave={() => setTooltip({ type: null, productId: null })}
                     >
@@ -480,9 +517,11 @@ export default function ProductsGrid() {
                   <Tooltip
                     text={`Show ${getProductCountByPostCode(product.postCode, PRODUCTS)} products with postal code ${product.postCode}`}
                     isVisible={tooltip.type === "postCode" && tooltip.productId === product.id}
+                    mouseX={mousePos.x}
+                    mouseY={mousePos.y}
                   >
                     <p
-                      className="text-xs font-mono text-muted-foreground cursor-help hover:text-primary transition-colors"
+                      className="text-xs font-mono text-muted-foreground cursor-pointer hover:text-primary transition-colors"
                       onMouseEnter={() => setTooltip({ type: "postCode", productId: product.id })}
                       onMouseLeave={() => setTooltip({ type: null, productId: null })}
                     >
