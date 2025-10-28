@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { Play, Pause } from "lucide-react"
+import { useTranslation } from "@/hooks/use-translation"
 
 interface HeroProps {
   country: string
@@ -9,6 +10,7 @@ interface HeroProps {
 }
 
 export default function Hero({ country, isDarkMode }: HeroProps) {
+  const { t } = useTranslation()
   const [isVideoPlaying, setIsVideoPlaying] = useState(true)
   const [mounted, setMounted] = useState(false)
   const [videoRef, setVideoRef] = useState<HTMLVideoElement | null>(null)
@@ -31,8 +33,8 @@ export default function Hero({ country, isDarkMode }: HeroProps) {
 
   const getHeroContent = () => {
     return {
-      title: `WELCOME TO GLOBALBOX ${country.toUpperCase()}`,
-      subtitle: "Connecting Global Commerce",
+      title: `${t('heroTitle')} ${country.toUpperCase()}`,
+      subtitle: t('heroSubtitle'),
       videoUrl: "/rainy-cloudy.mp4",
       backgroundGradient: isDarkMode
         ? "from-background/80 via-background/40 to-transparent"
@@ -100,13 +102,13 @@ export default function Hero({ country, isDarkMode }: HeroProps) {
             className="group px-8 py-4 bg-primary text-primary-foreground rounded-lg font-semibold hover:shadow-lg hover:shadow-primary/50 transition-all duration-300 transform hover:scale-105 flex items-center gap-2"
           >
             <Play className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            GLOBAL SERVICES
+            {t('globalServices')}
           </a>
           <a
             href="#promotions"
             className="px-8 py-4 border-2 border-primary text-primary rounded-lg font-semibold hover:bg-primary hover:text-primary-foreground transition-all duration-300 transform hover:scale-105"
           >
-            GLOBAL PROMOTIONS
+            {t('globalPromotions')}
           </a>
         </div>
 
@@ -117,7 +119,7 @@ export default function Hero({ country, isDarkMode }: HeroProps) {
           aria-label={isVideoPlaying ? "Pause video" : "Play video"}
         >
           {isVideoPlaying ? <Pause className="w-4 h-4 text-primary" /> : <Play className="w-4 h-4 text-primary" />}
-          <span className="text-xs font-medium text-muted-foreground">{isVideoPlaying ? "PLAYING" : "PAUSED"}</span>
+          <span className="text-xs font-medium text-muted-foreground">{isVideoPlaying ? t('playing') : t('paused')}</span>
         </button>
       </div>
 

@@ -4,6 +4,7 @@ import type React from "react"
 
 import { useState, useMemo } from "react"
 import { Search, ChevronDown, X, Share2, Heart, ShoppingCart } from "lucide-react"
+import { useTranslation } from "@/hooks/use-translation"
 
 interface Product {
   id: number
@@ -238,6 +239,7 @@ const Tooltip = ({
 )
 
 export default function ProductsGrid() {
+  const { t } = useTranslation()
   const [searchTerm, setSearchTerm] = useState("")
   const [marketSegment, setMarketSegment] = useState("")
   const [sortBy, setSortBy] = useState("")
@@ -304,8 +306,8 @@ export default function ProductsGrid() {
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16" onMouseMove={handleMouseMove}>
       {/* Section Header */}
       <div className="mb-12">
-        <h2 className="text-4xl font-bold tracking-tight mb-2">PRODUCTS</h2>
-        <p className="text-muted-foreground text-sm mb-4">PRICES INCLUDE ALL SALES TAXES EXCEPT CROSS-BORDER DUTIES</p>
+        <h2 className="text-4xl font-bold tracking-tight mb-2">{t('products')}</h2>
+        <p className="text-muted-foreground text-sm mb-4">{t('pricesIncludeTaxes')}</p>
       </div>
 
       {/* Search and Filter Controls */}
@@ -316,7 +318,7 @@ export default function ProductsGrid() {
             <Search className="absolute left-3 top-3 w-5 h-5 text-muted-foreground" />
             <input
               type="text"
-              placeholder="Search by City, Country..."
+              placeholder={t('searchPlaceholder')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-10 pr-4 py-2 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition-all"
@@ -332,7 +334,7 @@ export default function ProductsGrid() {
               className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary appearance-none cursor-pointer transition-all"
               aria-label="Filter by Market Segment"
             >
-              <option value="">Filter by Market Segment</option>
+              <option value="">{t('filterBySegment')}</option>
               <option value="B2B">B2B</option>
               <option value="B2C">B2C</option>
               <option value="B2G">B2G</option>
@@ -350,11 +352,11 @@ export default function ProductsGrid() {
               className="w-full px-4 py-2 bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary appearance-none cursor-pointer transition-all"
               aria-label="Sort by"
             >
-              <option value="">Sort by</option>
-              <option value="price-low">Price - Low to High</option>
-              <option value="price-high">Price - High to Low</option>
-              <option value="city-az">City A-Z</option>
-              <option value="rating">Newest Members</option>
+              <option value="">{t('sortBy')}</option>
+              <option value="price-low">{t('priceLowToHigh')}</option>
+              <option value="price-high">{t('priceHighToLow')}</option>
+              <option value="city-az">{t('cityAZ')}</option>
+              <option value="rating">{t('newestMembers')}</option>
             </select>
             <ChevronDown className="absolute right-3 top-3 w-5 h-5 text-muted-foreground pointer-events-none" />
           </div>
@@ -363,10 +365,10 @@ export default function ProductsGrid() {
         {/* Active Filters Display */}
         {hasActiveFilters && (
           <div className="flex flex-wrap gap-2 items-center pt-4 border-t border-border">
-            <span className="text-sm text-muted-foreground">Active filters:</span>
+            <span className="text-sm text-muted-foreground">{t('activeFilters')}</span>
             {searchTerm && (
               <div className="flex items-center gap-2 bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">
-                <span>Search: {searchTerm}</span>
+                <span>{t('search')}: {searchTerm}</span>
                 <button
                   onClick={() => setSearchTerm("")}
                   className="hover:opacity-70 transition-opacity"
@@ -378,7 +380,7 @@ export default function ProductsGrid() {
             )}
             {marketSegment && (
               <div className="flex items-center gap-2 bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">
-                <span>Segment: {marketSegment}</span>
+                <span>{t('segment')}: {marketSegment}</span>
                 <button
                   onClick={() => setMarketSegment("")}
                   className="hover:opacity-70 transition-opacity"
@@ -390,7 +392,7 @@ export default function ProductsGrid() {
             )}
             {sortBy && (
               <div className="flex items-center gap-2 bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">
-                <span>Sort: {sortBy.replace("-", " ")}</span>
+                <span>{t('sort')}: {sortBy.replace("-", " ")}</span>
                 <button
                   onClick={() => setSortBy("")}
                   className="hover:opacity-70 transition-opacity"
@@ -404,7 +406,7 @@ export default function ProductsGrid() {
               onClick={handleClearFilters}
               className="ml-auto text-sm text-muted-foreground hover:text-foreground transition-colors underline"
             >
-              Clear all
+              {t('clearAll')}
             </button>
           </div>
         )}
@@ -413,8 +415,8 @@ export default function ProductsGrid() {
       {/* Results Count */}
       <div className="mb-6 flex items-center justify-between">
         <p className="text-sm text-muted-foreground">
-          Showing <span className="font-semibold text-foreground">{filteredAndSortedProducts.length}</span> of{" "}
-          <span className="font-semibold text-foreground">{PRODUCTS.length}</span> products
+          {t('showing')} <span className="font-semibold text-foreground">{filteredAndSortedProducts.length}</span> {t('of')}{" "}
+          <span className="font-semibold text-foreground">{PRODUCTS.length}</span> {t('products')}
         </p>
       </div>
 
@@ -453,7 +455,7 @@ export default function ProductsGrid() {
               <div className="px-6 flex flex-col flex-grow">
                 {/* Product Header */}
                 <div className="mb-4 pb-4 border-b border-border">
-                  <p className="text-xs font-bold text-muted-foreground tracking-widest mb-2">VENDOR:</p>
+                  <p className="text-xs font-bold text-muted-foreground tracking-widest mb-2">{t('vendor')}</p>
                   <Tooltip
                     text={`Show ${getProductCountByVendor(product.vendor, PRODUCTS)} products posted by this vendor`}
                     isVisible={tooltip.type === "vendor" && tooltip.productId === product.id}
@@ -525,7 +527,7 @@ export default function ProductsGrid() {
                       onMouseEnter={() => setTooltip({ type: "postCode", productId: product.id })}
                       onMouseLeave={() => setTooltip({ type: null, productId: null })}
                     >
-                      POST CODE: {product.postCode}
+                      {t('postCode')} {product.postCode}
                     </p>
                   </Tooltip>
                 </div>
@@ -547,7 +549,7 @@ export default function ProductsGrid() {
 
                 {/* Member Since */}
                 <div className="flex items-center justify-between mb-6 pb-4 border-b border-border">
-                  <p className="text-xs font-semibold text-muted-foreground">MEMBER SINCE</p>
+                  <p className="text-xs font-semibold text-muted-foreground">{t('memberSince')}</p>
                   <p className="text-sm font-bold text-foreground">{product.memberSince}</p>
                 </div>
 
@@ -557,14 +559,14 @@ export default function ProductsGrid() {
                     aria-label="Share product"
                   >
                     <Share2 className="w-4 h-4" />
-                    <span className="hidden sm:inline">Share</span>
+                    <span className="hidden sm:inline">{t('share')}</span>
                   </button>
                   <button
                     className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-primary text-primary-foreground rounded-lg font-semibold hover:opacity-90 transition-opacity shadow-md hover:shadow-lg text-sm"
                     aria-label="Add to cart"
                   >
                     <ShoppingCart className="w-4 h-4" />
-                    <span>Add to Cart</span>
+                    <span>{t('addToCart')}</span>
                   </button>
                 </div>
               </div>
@@ -573,9 +575,9 @@ export default function ProductsGrid() {
         </div>
       ) : (
         <div className="text-center py-12">
-          <p className="text-muted-foreground mb-4">No products found matching your filters.</p>
+          <p className="text-muted-foreground mb-4">{t('noProductsFound')}</p>
           <button onClick={handleClearFilters} className="text-primary font-medium hover:underline">
-            Clear filters and try again
+            {t('clearFiltersTryAgain')}
           </button>
         </div>
       )}
@@ -589,7 +591,7 @@ export default function ProductsGrid() {
             className="px-4 py-2 border border-border rounded-lg hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
             aria-label="Previous page"
           >
-            Previous
+            {t('previous')}
           </button>
 
           <div className="flex items-center gap-1">
@@ -614,15 +616,15 @@ export default function ProductsGrid() {
             className="px-4 py-2 border border-border rounded-lg hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
             aria-label="Next page"
           >
-            Next
+            {t('next')}
           </button>
         </div>
       )}
 
       {/* Results Info */}
       <div className="text-center mt-6 text-sm text-muted-foreground">
-        Showing {startIndex + 1} to {Math.min(endIndex, filteredAndSortedProducts.length)} of{" "}
-        {filteredAndSortedProducts.length} products
+        {t('showingResults')} {startIndex + 1} {t('to')} {Math.min(endIndex, filteredAndSortedProducts.length)} {t('of')}{" "}
+        {filteredAndSortedProducts.length} {t('products')}
       </div>
     </section>
   )

@@ -1,15 +1,17 @@
 "use client"
 
 import { Twitter, Instagram, Linkedin, Facebook, Youtube, Mail, Phone } from "lucide-react"
+import { useTranslation } from "@/hooks/use-translation"
 
 export default function Footer() {
+  const { t } = useTranslation()
   return (
     <footer className="bg-card border-t border-border mt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         {/* Partner Line */}
         <div className="text-center mb-12 pb-8 border-b border-border">
           <p className="text-sm font-semibold text-muted-foreground">
-            OFFICIAL PARTNER OF THE ROMANIAN RUGBY FEDERATION
+            {t('officialPartner')}
           </p>
         </div>
 
@@ -18,7 +20,7 @@ export default function Footer() {
           <div className="space-y-4">
             <h3 className="font-bold text-foreground">GLOBALBOX</h3>
             <p className="text-sm text-muted-foreground">
-              Connecting global commerce and enabling businesses worldwide to buy, sell, and grow.
+              {t('companyDescription')}
             </p>
             <div className="space-y-2 text-sm text-muted-foreground">
               <div className="flex items-center gap-2">
@@ -38,26 +40,26 @@ export default function Footer() {
 
           {/* Quick Links */}
           <div className="space-y-4">
-            <h4 className="font-bold text-foreground">QUICK LINKS</h4>
+            <h4 className="font-bold text-foreground">{t('quickLinks')}</h4>
             <ul className="space-y-2 text-sm">
               <li>
                 <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                  About Us
+                  {t('aboutUs')}
                 </a>
               </li>
               <li>
                 <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                  How It Works
+                  {t('howItWorks')}
                 </a>
               </li>
               <li>
                 <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                  Become a Seller
+                  {t('becomeSeller')}
                 </a>
               </li>
               <li>
                 <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                  Contact Us
+                  {t('contactUs')}
                 </a>
               </li>
             </ul>
@@ -65,26 +67,26 @@ export default function Footer() {
 
           {/* Support */}
           <div className="space-y-4">
-            <h4 className="font-bold text-foreground">SUPPORT</h4>
+            <h4 className="font-bold text-foreground">{t('support')}</h4>
             <ul className="space-y-2 text-sm">
               <li>
                 <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                  Help Center
+                  {t('helpCenter')}
                 </a>
               </li>
               <li>
                 <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                  Shipping Info
+                  {t('shippingInfo')}
                 </a>
               </li>
               <li>
                 <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                  Returns & Refunds
+                  {t('returnsRefunds')}
                 </a>
               </li>
               <li>
                 <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                  FAQ
+                  {t('faq')}
                 </a>
               </li>
             </ul>
@@ -92,26 +94,26 @@ export default function Footer() {
 
           {/* Legal */}
           <div className="space-y-4">
-            <h4 className="font-bold text-foreground">LEGAL</h4>
+            <h4 className="font-bold text-foreground">{t('legal')}</h4>
             <ul className="space-y-2 text-sm">
               <li>
                 <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                  Privacy Policy
+                  {t('privacyPolicy')}
                 </a>
               </li>
               <li>
                 <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                  Terms of Service
+                  {t('termsOfService')}
                 </a>
               </li>
               <li>
                 <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                  Cookie Policy
+                  {t('cookiePolicy')}
                 </a>
               </li>
               <li>
                 <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                  Compliance
+                  {t('compliance')}
                 </a>
               </li>
             </ul>
@@ -120,18 +122,18 @@ export default function Footer() {
 
         {/* Slogans */}
         <div className="text-center mb-12 space-y-3 py-8 border-y border-border">
-          <p className="text-lg font-bold">OUR PLATFORM - YOUR BUSINESS</p>
-          <p className="text-lg font-bold">YOUR SUCCESS - OUR PRIORITY</p>
-          <p className="text-lg font-bold">BUY / SELL / PROMOTE / ANYTHING / ANYTIME / ANYWHERE</p>
+          <p className="text-lg font-bold">{t('ourPlatformYourBusiness')}</p>
+          <p className="text-lg font-bold">{t('yourSuccessOurPriority')}</p>
+          <p className="text-lg font-bold">{t('buySellPromote')}</p>
           <p className="text-xs text-muted-foreground mt-4">
-            * GlobalBox will not permit or tolerate the commercialization of illegal or inappropriate items.
+            {t('disclaimer')}
           </p>
         </div>
 
         {/* Social Links */}
         <div className="flex items-center justify-center gap-6 mb-12 pb-8 border-b border-border flex-wrap">
           <a href="#" className="text-muted-foreground hover:text-primary transition-colors text-sm font-medium">
-            HOME
+            {t('home')}
           </a>
           <a
             href="https://twitter.com/OfficialGlobalBox"
@@ -140,7 +142,7 @@ export default function Footer() {
             className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-2"
           >
             <Twitter className="w-4 h-4" />
-            <span className="text-sm font-medium">Twitter</span>
+            <span className="text-sm font-medium">{t('twitter')}</span>
           </a>
           <a
             href="https://instagram.com/globalbox_world"
@@ -149,7 +151,7 @@ export default function Footer() {
             className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-2"
           >
             <Instagram className="w-4 h-4" />
-            <span className="text-sm font-medium">Instagram</span>
+            <span className="text-sm font-medium">{t('instagram')}</span>
           </a>
           <a
             href="https://linkedin.com/company/globalbox-world"
@@ -158,7 +160,7 @@ export default function Footer() {
             className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-2"
           >
             <Linkedin className="w-4 h-4" />
-            <span className="text-sm font-medium">LinkedIn</span>
+            <span className="text-sm font-medium">{t('linkedin')}</span>
           </a>
           <a
             href="https://facebook.com/OfficialGlobalBox"
@@ -167,7 +169,7 @@ export default function Footer() {
             className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-2"
           >
             <Facebook className="w-4 h-4" />
-            <span className="text-sm font-medium">Facebook</span>
+            <span className="text-sm font-medium">{t('facebook')}</span>
           </a>
           <a
             href="https://youtube.com/channel/UC-jROZQGqqDkqltU-qHeLmw"
@@ -176,13 +178,13 @@ export default function Footer() {
             className="text-muted-foreground hover:text-primary transition-colors flex items-center gap-2"
           >
             <Youtube className="w-4 h-4" />
-            <span className="text-sm font-medium">YouTube</span>
+            <span className="text-sm font-medium">{t('youtube')}</span>
           </a>
         </div>
 
         {/* Partners */}
         <div className="text-center mb-8">
-          <h4 className="font-bold mb-6">OUR TRUSTED PARTNERS</h4>
+          <h4 className="font-bold mb-6">{t('trustedPartners')}</h4>
           <div className="flex flex-wrap items-center justify-center gap-6">
             <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
               FedEx
@@ -206,7 +208,7 @@ export default function Footer() {
         </div>
 
         {/* Copyright */}
-        <p className="text-center text-xs text-muted-foreground">© 2015–2025 GLOBALBOX.WORLD ALL RIGHTS RESERVED</p>
+        <p className="text-center text-xs text-muted-foreground">{t('copyright')}</p>
       </div>
     </footer>
   )

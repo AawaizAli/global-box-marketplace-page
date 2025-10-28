@@ -3,15 +3,18 @@
 import { useState } from "react"
 import { ShoppingCart, Menu, X, Moon, Sun } from "lucide-react"
 import { useTheme } from "@/hooks/use-theme"
+import { useLanguage } from "@/hooks/use-language"
+import { useTranslation } from "@/hooks/use-translation"
 
 interface HeaderProps {
   country: string
 }
 
 export default function Header({ country }: HeaderProps) {
-  const [language, setLanguage] = useState<"EN" | "UR">("EN")
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const { isDarkMode, toggleTheme } = useTheme()
+  const { language, toggleLanguage } = useLanguage()
+  const { t } = useTranslation()
 
   return (
     <header className="sticky top-0 z-50 bg-background border-border transition-colors duration-300">
@@ -22,7 +25,7 @@ export default function Header({ country }: HeaderProps) {
           <div className="flex items-center gap-4">
             <div className="flex gap-2 bg-muted rounded-lg p-1">
               <button
-                onClick={() => setLanguage("EN")}
+                onClick={() => language !== "EN" && toggleLanguage()}
                 className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
                   language === "EN" ? "bg-primary text-primary-foreground" : "text-foreground hover:text-primary"
                 }`}
@@ -30,7 +33,7 @@ export default function Header({ country }: HeaderProps) {
                 EN
               </button>
               <button
-                onClick={() => setLanguage("UR")}
+                onClick={() => language !== "UR" && toggleLanguage()}
                 className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
                   language === "UR" ? "bg-primary text-primary-foreground" : "text-foreground hover:text-primary"
                 }`}
@@ -69,17 +72,17 @@ export default function Header({ country }: HeaderProps) {
         {/* Main Menu */}
         <div className="hidden md:flex items-center justify-center gap-8 py-4 border-t border-border">
           <a href="#deals" className="text-sm font-medium hover:text-primary transition-colors">
-            DEALS AND PROMOTIONS
+            {t('dealsAndPromotions')}
           </a>
           <a href="#search" className="text-sm font-medium hover:text-primary transition-colors">
-            ADVANCED SEARCH
+            {t('advancedSearch')}
           </a>
         </div>
 
         {/* Tagline */}
         <div className="text-center py-3 border-t border-border">
           <p className="text-xs sm:text-sm font-semibold tracking-widest text-muted-foreground">
-            THE WORLD'S ONLINE STORE • {country.toUpperCase()}
+            {t('worldsOnlineStore')} • {country.toUpperCase()}
           </p>
         </div>
       </nav>
