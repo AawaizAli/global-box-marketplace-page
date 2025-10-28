@@ -3,7 +3,7 @@
 import type React from "react"
 
 import { useState, useMemo } from "react"
-import { Search, ChevronDown, X, Share2, Heart, ShoppingCart } from "lucide-react"
+import { Search, ChevronDown, X, Share2, Heart, ShoppingCart, Grid3X3, List } from "lucide-react"
 import { useTranslation } from "@/hooks/use-translation"
 
 interface Product {
@@ -247,6 +247,7 @@ export default function ProductsGrid() {
   const [wishlist, setWishlist] = useState<number[]>([])
   const [tooltip, setTooltip] = useState<TooltipState>({ type: null, productId: null })
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
 
   const filteredAndSortedProducts = useMemo(() => {
     let results = PRODUCTS
@@ -412,50 +413,99 @@ export default function ProductsGrid() {
         )}
       </div>
 
-      {/* Results Count */}
+      {/* Results Count and View Toggle */}
       <div className="mb-6 flex items-center justify-between">
         <p className="text-sm text-muted-foreground">
           {t('showing')} <span className="font-semibold text-foreground">{filteredAndSortedProducts.length}</span> {t('of')}{" "}
           <span className="font-semibold text-foreground">{PRODUCTS.length}</span> {t('products')}
         </p>
+        
+        {/* View Toggle Buttons */}
+        <div className="flex items-center gap-2 bg-gray-100 rounded-2xl p-1">
+          <button
+            onClick={() => setViewMode("grid")}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all duration-300 ${
+              viewMode === "grid"
+                ? "bg-white text-primary shadow-md font-semibold"
+                : "text-gray-600 hover:text-gray-900 hover:bg-white/50"
+            }`}
+            aria-label="Grid view"
+          >
+            <Grid3X3 className="w-4 h-4" />
+            <span className="hidden sm:inline text-sm">Grid</span>
+          </button>
+          <button
+            onClick={() => setViewMode("list")}
+            className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all duration-300 ${
+              viewMode === "list"
+                ? "bg-white text-primary shadow-md font-semibold"
+                : "text-gray-600 hover:text-gray-900 hover:bg-white/50"
+            }`}
+            aria-label="List view"
+          >
+            <List className="w-4 h-4" />
+            <span className="hidden sm:inline text-sm">List</span>
+          </button>
+        </div>
       </div>
 
-      {/* Products Grid */}
+      {/* Products Display */}
       {currentProducts.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-          {currentProducts.map((product) => (
-            <div
-              key={product.id}
-              className="bg-card border border-border rounded-lg overflow-hidden hover:shadow-lg hover:border-primary/50 transition-all duration-300 group flex flex-col"
-            >
-              <div className="px-6 pt-4 pb-4">
-                <h3 className="text-center text-sm font-bold text-foreground line-clamp-1">{product.title}</h3>
+        viewMode === "grid" ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+            {currentProducts.map((product) => (
+              <div
+                key={product.id}
+                className="group relative bg-gradient-to-br from-white via-white to-gray-50/50 border border-gray-200/60 rounded-3xl overflow-hidden hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-2 transition-all duration-500 ease-out flex flex-col backdrop-blur-sm"
+                style={{
+                  boxShadow: '0 10px 40px rgba(0,0,0,0.1), 0 4px 20px rgba(0,0,0,0.05)',
+                }}
+              >
+              {/* Decorative gradient overlay */}
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              
+              {/* Product title header */}
+              <div className="relative px-6 pt-6 pb-4">
+                <h3 className="text-center text-lg font-bold text-gray-900 line-clamp-2 leading-tight">{product.title}</h3>
               </div>
 
-              <div className="relative w-full aspect-square bg-muted overflow-hidden mb-6 rounded-lg">
-                <img
-                  src={product.image || "/placeholder.svg"}
-                  alt={product.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                <button
-                  onClick={() => toggleWishlist(product.id)}
-                  className="absolute top-3 right-3 p-2 bg-white/90 hover:bg-white rounded-full transition-all shadow-md"
-                  aria-label="Add to wishlist"
-                >
-                  <Heart
-                    className={`w-5 h-5 transition-colors ${
-                      wishlist.includes(product.id) ? "fill-primary text-primary" : "text-muted-foreground"
-                    }`}
+              {/* Product image container with 3D effect */}
+              <div className="relative mx-6 mb-6">
+                <div className="relative w-full aspect-square bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden rounded-2xl shadow-lg group-hover:shadow-xl transition-all duration-500">
+                  <img
+                    src={product.image || "/placeholder.svg"}
+                    alt={product.title}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
                   />
-                </button>
+                  
+                  {/* Gradient overlay for depth */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                  
+                  {/* Wishlist button with modern styling */}
+                  <button
+                    onClick={() => toggleWishlist(product.id)}
+                    className="absolute top-4 right-4 p-3 bg-white/95 backdrop-blur-md hover:bg-white rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-110 border border-white/20"
+                    aria-label="Add to wishlist"
+                  >
+                    <Heart
+                      className={`w-5 h-5 transition-all duration-300 ${
+                        wishlist.includes(product.id) ? "fill-red-500 text-red-500 scale-110" : "text-gray-600 hover:text-red-500"
+                      }`}
+                    />
+                  </button>
+                  
+                  {/* Floating action indicator */}
+                  <div className="absolute bottom-4 left-4 px-3 py-1 bg-white/90 backdrop-blur-md rounded-full text-xs font-semibold text-gray-700 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-2 group-hover:translate-y-0">
+                    {product.category}
+                  </div>
+                </div>
               </div>
 
               {/* Product Content */}
-              <div className="px-6 flex flex-col flex-grow">
-                {/* Product Header */}
-                <div className="mb-4 pb-4 border-b border-border">
-                  <p className="text-xs font-bold text-muted-foreground tracking-widest mb-2">{t('vendor')}</p>
+              <div className="relative px-6 flex flex-col flex-grow">
+                {/* Vendor Section */}
+                <div className="mb-5 pb-5 border-b border-gray-200/60">
+                  <p className="text-xs font-bold text-gray-500 tracking-widest mb-3 uppercase">{t('vendor')}</p>
                   <Tooltip
                     text={`Show ${getProductCountByVendor(product.vendor, PRODUCTS)} products posted by this vendor`}
                     isVisible={tooltip.type === "vendor" && tooltip.productId === product.id}
@@ -463,7 +513,7 @@ export default function ProductsGrid() {
                     mouseY={mousePos.y}
                   >
                     <p
-                      className="text-sm font-semibold text-foreground cursor-pointer hover:text-primary transition-colors"
+                      className="text-base font-bold text-gray-900 cursor-pointer hover:text-primary transition-colors duration-300"
                       onMouseEnter={() => setTooltip({ type: "vendor", productId: product.id })}
                       onMouseLeave={() => setTooltip({ type: null, productId: null })}
                     >
@@ -473,7 +523,7 @@ export default function ProductsGrid() {
                 </div>
 
                 {/* Location Information */}
-                <div className="space-y-2 mb-4 pb-4 border-b border-border">
+                <div className="space-y-3 mb-5 pb-5 border-b border-gray-200/60">
                   <Tooltip
                     text={`Show ${getProductCountByCity(product.city, PRODUCTS)} products posted in ${product.city}`}
                     isVisible={tooltip.type === "city" && tooltip.productId === product.id}
@@ -481,7 +531,7 @@ export default function ProductsGrid() {
                     mouseY={mousePos.y}
                   >
                     <p
-                      className="text-lg font-bold text-foreground cursor-pointer hover:text-primary transition-colors"
+                      className="text-xl font-bold text-gray-900 cursor-pointer hover:text-primary transition-colors duration-300"
                       onMouseEnter={() => setTooltip({ type: "city", productId: product.id })}
                       onMouseLeave={() => setTooltip({ type: null, productId: null })}
                     >
@@ -495,7 +545,7 @@ export default function ProductsGrid() {
                     mouseY={mousePos.y}
                   >
                     <p
-                      className="text-sm text-muted-foreground cursor-pointer hover:text-primary transition-colors"
+                      className="text-sm text-gray-600 cursor-pointer hover:text-primary transition-colors duration-300"
                       onMouseEnter={() => setTooltip({ type: "region", productId: product.id })}
                       onMouseLeave={() => setTooltip({ type: null, productId: null })}
                     >
@@ -509,7 +559,7 @@ export default function ProductsGrid() {
                     mouseY={mousePos.y}
                   >
                     <p
-                      className="text-sm text-muted-foreground cursor-pointer hover:text-primary transition-colors"
+                      className="text-sm text-gray-600 cursor-pointer hover:text-primary transition-colors duration-300"
                       onMouseEnter={() => setTooltip({ type: "country", productId: product.id })}
                       onMouseLeave={() => setTooltip({ type: null, productId: null })}
                     >
@@ -523,7 +573,7 @@ export default function ProductsGrid() {
                     mouseY={mousePos.y}
                   >
                     <p
-                      className="text-xs font-mono text-muted-foreground cursor-pointer hover:text-primary transition-colors"
+                      className="text-xs font-mono text-gray-500 cursor-pointer hover:text-primary transition-colors duration-300"
                       onMouseEnter={() => setTooltip({ type: "postCode", productId: product.id })}
                       onMouseLeave={() => setTooltip({ type: null, productId: null })}
                     >
@@ -532,37 +582,41 @@ export default function ProductsGrid() {
                   </Tooltip>
                 </div>
 
-                <div className="space-y-2 mb-4 pb-4 border-b border-border">
+                {/* Pricing Section */}
+                <div className="space-y-3 mb-5 pb-5 border-b border-gray-200/60">
                   <div className="flex items-baseline gap-2">
-                    <p className="text-2xl font-bold text-primary">${product.priceUSD.toFixed(2)}</p>
-                    <p className="text-xs text-muted-foreground">USD</p>
+                    <p className="text-3xl font-bold text-primary">${product.priceUSD.toFixed(2)}</p>
+                    <p className="text-sm text-gray-500 font-medium">USD</p>
                   </div>
                   <div className="flex items-baseline gap-2">
-                    <p className="text-lg font-semibold text-foreground">£{product.priceGBP.toFixed(2)}</p>
-                    <p className="text-xs text-muted-foreground">GBP</p>
+                    <p className="text-xl font-bold text-gray-800">£{product.priceGBP.toFixed(2)}</p>
+                    <p className="text-sm text-gray-500 font-medium">GBP</p>
                   </div>
                   <div className="flex items-baseline gap-2">
-                    <p className="text-lg font-semibold text-foreground">{product.pricePKR.toFixed(2)}</p>
-                    <p className="text-xs text-muted-foreground">PKR (1 USD = {product.conversionRate.toFixed(2)})</p>
+                    <p className="text-lg font-semibold text-gray-700">{product.pricePKR.toFixed(2)}</p>
+                    <p className="text-xs text-gray-500">PKR (1 USD = {product.conversionRate.toFixed(2)})</p>
                   </div>
                 </div>
 
                 {/* Member Since */}
-                <div className="flex items-center justify-between mb-6 pb-4 border-b border-border">
-                  <p className="text-xs font-semibold text-muted-foreground">{t('memberSince')}</p>
-                  <p className="text-sm font-bold text-foreground">{product.memberSince}</p>
+                <div className="flex items-center justify-between mb-6 pb-5 border-b border-gray-200/60">
+                  <p className="text-sm font-semibold text-gray-500 uppercase tracking-wide">{t('memberSince')}</p>
+                  <div className="px-3 py-1 bg-primary/10 rounded-full">
+                    <p className="text-sm font-bold text-primary">{product.memberSince}</p>
+                  </div>
                 </div>
 
-                <div className="flex gap-2 mt-auto mb-6">
+                {/* Action Buttons */}
+                <div className="flex gap-3 mt-auto mb-6">
                   <button
-                    className="flex-1 flex items-center justify-center gap-2 px-3 py-2 border border-border rounded-lg font-medium hover:bg-muted transition-colors text-sm"
+                    className="flex-1 flex items-center justify-center gap-2 px-4 py-3 border-2 border-gray-200 rounded-2xl font-semibold hover:bg-gray-50 hover:border-gray-300 transition-all duration-300 text-sm shadow-sm hover:shadow-md"
                     aria-label="Share product"
                   >
                     <Share2 className="w-4 h-4" />
                     <span className="hidden sm:inline">{t('share')}</span>
                   </button>
                   <button
-                    className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-primary text-primary-foreground rounded-lg font-semibold hover:opacity-90 transition-opacity shadow-md hover:shadow-lg text-sm"
+                    className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-primary to-primary/90 text-white rounded-2xl font-bold hover:from-primary/90 hover:to-primary hover:shadow-lg hover:shadow-primary/25 transition-all duration-300 text-sm transform hover:scale-105"
                     aria-label="Add to cart"
                   >
                     <ShoppingCart className="w-4 h-4" />
@@ -573,6 +627,162 @@ export default function ProductsGrid() {
             </div>
           ))}
         </div>
+        ) : (
+          /* List View */
+          <div className="space-y-6 mb-12">
+            {currentProducts.map((product) => (
+              <div
+                key={product.id}
+                className="group relative bg-gradient-to-r from-white via-white to-gray-50/50 border border-gray-200/60 rounded-3xl overflow-hidden hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-1 transition-all duration-500 ease-out backdrop-blur-sm"
+                style={{
+                  boxShadow: '0 8px 30px rgba(0,0,0,0.08), 0 2px 10px rgba(0,0,0,0.04)',
+                }}
+              >
+                {/* Decorative gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                
+                <div className="flex flex-col lg:flex-row">
+                  {/* Product Image */}
+                  <div className="relative lg:w-80 lg:h-64 h-48 overflow-hidden">
+                    <img
+                      src={product.image || "/placeholder.svg"}
+                      alt={product.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    
+                    {/* Gradient overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    
+                    {/* Wishlist button */}
+                    <button
+                      onClick={() => toggleWishlist(product.id)}
+                      className="absolute top-4 right-4 p-3 bg-white/95 backdrop-blur-md hover:bg-white rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-110 border border-white/20"
+                      aria-label="Add to wishlist"
+                    >
+                      <Heart
+                        className={`w-5 h-5 transition-all duration-300 ${
+                          wishlist.includes(product.id) ? "fill-red-500 text-red-500 scale-110" : "text-gray-600 hover:text-red-500"
+                        }`}
+                      />
+                    </button>
+                    
+                    {/* Category badge */}
+                    <div className="absolute bottom-4 left-4 px-3 py-1 bg-white/90 backdrop-blur-md rounded-full text-xs font-semibold text-gray-700 shadow-lg">
+                      {product.category}
+                    </div>
+                  </div>
+                  
+                  {/* Product Content */}
+                  <div className="flex-1 p-6 lg:p-8">
+                    <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between h-full">
+                      {/* Left Content */}
+                      <div className="flex-1 lg:pr-8">
+                        {/* Product Title */}
+                        <h3 className="text-2xl font-bold text-gray-900 mb-4 line-clamp-2 leading-tight">{product.title}</h3>
+                        
+                        {/* Vendor */}
+                        <div className="mb-4">
+                          <p className="text-xs font-bold text-gray-500 tracking-widest mb-2 uppercase">{t('vendor')}</p>
+                          <Tooltip
+                            text={`Show ${getProductCountByVendor(product.vendor, PRODUCTS)} products posted by this vendor`}
+                            isVisible={tooltip.type === "vendor" && tooltip.productId === product.id}
+                            mouseX={mousePos.x}
+                            mouseY={mousePos.y}
+                          >
+                            <p
+                              className="text-lg font-bold text-gray-900 cursor-pointer hover:text-primary transition-colors duration-300"
+                              onMouseEnter={() => setTooltip({ type: "vendor", productId: product.id })}
+                              onMouseLeave={() => setTooltip({ type: null, productId: null })}
+                            >
+                              {product.vendor}
+                            </p>
+                          </Tooltip>
+                        </div>
+                        
+                        {/* Location */}
+                        <div className="mb-4">
+                          <Tooltip
+                            text={`Show ${getProductCountByCity(product.city, PRODUCTS)} products posted in ${product.city}`}
+                            isVisible={tooltip.type === "city" && tooltip.productId === product.id}
+                            mouseX={mousePos.x}
+                            mouseY={mousePos.y}
+                          >
+                            <p
+                              className="text-xl font-bold text-gray-900 cursor-pointer hover:text-primary transition-colors duration-300 mb-1"
+                              onMouseEnter={() => setTooltip({ type: "city", productId: product.id })}
+                              onMouseLeave={() => setTooltip({ type: null, productId: null })}
+                            >
+                              {product.city}
+                            </p>
+                          </Tooltip>
+                          <Tooltip
+                            text={`Show ${getProductCountByRegion(product.region, PRODUCTS)} products posted in ${product.region}`}
+                            isVisible={tooltip.type === "region" && tooltip.productId === product.id}
+                            mouseX={mousePos.x}
+                            mouseY={mousePos.y}
+                          >
+                            <p
+                              className="text-sm text-gray-600 cursor-pointer hover:text-primary transition-colors duration-300"
+                              onMouseEnter={() => setTooltip({ type: "region", productId: product.id })}
+                              onMouseLeave={() => setTooltip({ type: null, productId: null })}
+                            >
+                              {product.region}, {product.country}
+                            </p>
+                          </Tooltip>
+                        </div>
+                        
+                        {/* Member Since */}
+                        <div className="flex items-center gap-3">
+                          <p className="text-sm font-semibold text-gray-500 uppercase tracking-wide">{t('memberSince')}</p>
+                          <div className="px-3 py-1 bg-primary/10 rounded-full">
+                            <p className="text-sm font-bold text-primary">{product.memberSince}</p>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {/* Right Content - Pricing and Actions */}
+                      <div className="mt-6 lg:mt-0 lg:w-80">
+                        {/* Pricing */}
+                        <div className="mb-6">
+                          <div className="flex items-baseline gap-2 mb-2">
+                            <p className="text-4xl font-bold text-primary">${product.priceUSD.toFixed(2)}</p>
+                            <p className="text-sm text-gray-500 font-medium">USD</p>
+                          </div>
+                          <div className="flex items-baseline gap-2 mb-2">
+                            <p className="text-xl font-bold text-gray-800">£{product.priceGBP.toFixed(2)}</p>
+                            <p className="text-sm text-gray-500 font-medium">GBP</p>
+                          </div>
+                          <div className="flex items-baseline gap-2">
+                            <p className="text-lg font-semibold text-gray-700">{product.pricePKR.toFixed(2)}</p>
+                            <p className="text-xs text-gray-500">PKR</p>
+                          </div>
+                        </div>
+                        
+                        {/* Action Buttons */}
+                        <div className="flex gap-3">
+                          <button
+                            className="flex-1 flex items-center justify-center gap-2 px-4 py-3 border-2 border-gray-200 rounded-2xl font-semibold hover:bg-gray-50 hover:border-gray-300 transition-all duration-300 text-sm shadow-sm hover:shadow-md"
+                            aria-label="Share product"
+                          >
+                            <Share2 className="w-4 h-4" />
+                            <span>{t('share')}</span>
+                          </button>
+                          <button
+                            className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-primary to-primary/90 text-white rounded-2xl font-bold hover:from-primary/90 hover:to-primary hover:shadow-lg hover:shadow-primary/25 transition-all duration-300 text-sm transform hover:scale-105"
+                            aria-label="Add to cart"
+                          >
+                            <ShoppingCart className="w-4 h-4" />
+                            <span>{t('addToCart')}</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )
       ) : (
         <div className="text-center py-12">
           <p className="text-muted-foreground mb-4">{t('noProductsFound')}</p>

@@ -64,41 +64,58 @@ export default function FeaturedProducts() {
           
           {/* Products Grid Container */}
           <div className="relative w-full p-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {currentSlide.map((product: FeaturedProduct, index: number) => (
-                <div key={product.id} className="group/product relative bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                <div 
+                  key={product.id} 
+                  className="group/product relative bg-gradient-to-br from-white via-white to-gray-50/50 rounded-3xl overflow-hidden shadow-2xl hover:shadow-3xl transition-all duration-700 ease-out hover:-translate-y-3 border border-gray-200/40"
+                  style={{
+                    boxShadow: '0 20px 60px rgba(0,0,0,0.15), 0 8px 30px rgba(0,0,0,0.08)',
+                  }}
+                >
+                  {/* Decorative gradient overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 opacity-0 group-hover/product:opacity-100 transition-opacity duration-700"></div>
+                  
                   {/* Product Image */}
-                  <div className="relative h-48 overflow-hidden">
+                  <div className="relative h-56 overflow-hidden">
                     <img
                       src={product.image || "/placeholder.svg"}
                       alt={product.name || `Product ${product.id}`}
-                      className="w-full h-full object-cover transition-transform duration-300 group-hover/product:scale-105"
+                      className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover/product:scale-110"
                     />
                     
-                    {/* Gradient Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"></div>
+                    {/* Enhanced Gradient Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover/product:opacity-100 transition-opacity duration-500"></div>
                     
-                    {/* Action Buttons */}
-                    <div className="absolute top-3 right-3 flex gap-2 opacity-0 group-hover/product:opacity-100 transition-opacity duration-300">
-                      <button className="p-2 bg-white/90 backdrop-blur-md rounded-full shadow-lg border border-white/20 hover:scale-110 transition-all duration-300 hover:bg-white">
-                        <Heart className="w-4 h-4 text-primary" />
+                    {/* Floating Action Buttons */}
+                    <div className="absolute top-4 right-4 flex gap-3 opacity-0 group-hover/product:opacity-100 transition-all duration-500 transform translate-y-2 group-hover/product:translate-y-0">
+                      <button className="p-3 bg-white/95 backdrop-blur-md rounded-2xl shadow-xl border border-white/30 hover:scale-110 hover:bg-white transition-all duration-300 hover:shadow-2xl">
+                        <Heart className="w-5 h-5 text-red-500 hover:text-red-600 transition-colors" />
                       </button>
-                      <button className="p-2 bg-white/90 backdrop-blur-md rounded-full shadow-lg border border-white/20 hover:scale-110 transition-all duration-300 hover:bg-white">
-                        <Share2 className="w-4 h-4 text-accent" />
+                      <button className="p-3 bg-white/95 backdrop-blur-md rounded-2xl shadow-xl border border-white/30 hover:scale-110 hover:bg-white transition-all duration-300 hover:shadow-2xl">
+                        <Share2 className="w-5 h-5 text-blue-500 hover:text-blue-600 transition-colors" />
                       </button>
+                    </div>
+                    
+                    {/* Category Badge */}
+                    <div className="absolute bottom-4 left-4 px-3 py-1 bg-white/90 backdrop-blur-md rounded-full text-xs font-bold text-gray-700 opacity-0 group-hover/product:opacity-100 transition-all duration-500 transform translate-y-2 group-hover/product:translate-y-0 shadow-lg">
+                      Featured
                     </div>
                   </div>
                   
                   {/* Product Info */}
-                  <div className="p-4">
-                    <h3 className="font-semibold text-lg text-gray-900 mb-2 line-clamp-2">
+                  <div className="relative p-6">
+                    <h3 className="font-bold text-xl text-gray-900 mb-4 line-clamp-2 leading-tight">
                       {product.name || `Product ${product.id}`}
                     </h3>
                     <div className="flex items-center justify-between">
-                      <span className="text-2xl font-bold text-primary">
-                        {product.price || "$99"}
-                      </span>
-                      <button className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors duration-200 text-sm font-medium">
+                      <div className="flex flex-col">
+                        <span className="text-3xl font-bold text-primary mb-1">
+                          {product.price || "$99"}
+                        </span>
+                        <span className="text-sm text-gray-500 font-medium">Starting Price</span>
+                      </div>
+                      <button className="px-6 py-3 bg-gradient-to-r from-primary to-primary/90 text-white rounded-2xl hover:from-primary/90 hover:to-primary hover:shadow-lg hover:shadow-primary/25 transition-all duration-300 text-sm font-bold transform hover:scale-105">
                         View Details
                       </button>
                     </div>
