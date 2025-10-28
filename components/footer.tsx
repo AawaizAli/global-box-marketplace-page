@@ -25,23 +25,39 @@ export default function Footer() {
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
           {/* Company Info */}
-          <div className="space-y-4">
-            <h3 className="font-bold text-foreground">GLOBALBOX</h3>
-            <p className="text-sm text-muted-foreground">
-              {t('companyDescription')}
-            </p>
-            <div className="space-y-2 text-sm text-muted-foreground">
-              <div className="flex items-center gap-2">
-                <Mail className="w-4 h-4 text-primary" />
-                <a href="mailto:support@globalbox.world" className="hover:text-primary transition-colors">
+          <div className="space-y-6">
+            <div className="space-y-4">
+              <h3 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">GLOBALBOX</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                {t('companyDescription')}
+              </p>
+            </div>
+            
+            {/* Contact Information with Enhanced Styling */}
+            <div className="space-y-3">
+              <div className="group flex items-center gap-3 p-3 bg-gradient-to-r from-white/50 via-white/30 to-white/50 rounded-2xl hover:from-primary/10 hover:to-accent/10 transition-all duration-300 border border-white/20 hover:border-primary/30">
+                <div className="p-2 bg-primary/10 rounded-xl group-hover:bg-primary/20 transition-colors">
+                  <Mail className="w-4 h-4 text-primary" />
+                </div>
+                <a href="mailto:support@globalbox.world" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
                   support@globalbox.world
                 </a>
               </div>
-              <div className="flex items-center gap-2">
-                <Phone className="w-4 h-4 text-primary" />
-                <a href="tel:+1234567890" className="hover:text-primary transition-colors">
+              <div className="group flex items-center gap-3 p-3 bg-gradient-to-r from-white/50 via-white/30 to-white/50 rounded-2xl hover:from-primary/10 hover:to-accent/10 transition-all duration-300 border border-white/20 hover:border-primary/30">
+                <div className="p-2 bg-primary/10 rounded-xl group-hover:bg-primary/20 transition-colors">
+                  <Phone className="w-4 h-4 text-primary" />
+                </div>
+                <a href="tel:+1234567890" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
                   +1 (234) 567-890
                 </a>
+              </div>
+              <div className="group flex items-center gap-3 p-3 bg-gradient-to-r from-white/50 via-white/30 to-white/50 rounded-2xl hover:from-primary/10 hover:to-accent/10 transition-all duration-300 border border-white/20 hover:border-primary/30">
+                <div className="p-2 bg-primary/10 rounded-xl group-hover:bg-primary/20 transition-colors">
+                  <MapPin className="w-4 h-4 text-primary" />
+                </div>
+                <span className="text-sm font-medium text-foreground">
+                  Global Headquarters
+                </span>
               </div>
             </div>
           </div>
