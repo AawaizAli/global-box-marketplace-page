@@ -11,17 +11,29 @@ interface HeroProps {
 export default function Hero({ country, isDarkMode }: HeroProps) {
   const [isVideoPlaying, setIsVideoPlaying] = useState(true)
   const [mounted, setMounted] = useState(false)
+  const [videoRef, setVideoRef] = useState<HTMLVideoElement | null>(null)
 
   useEffect(() => {
     setMounted(true)
   }, [])
 
+  const toggleVideo = () => {
+    if (videoRef) {
+      if (isVideoPlaying) {
+        videoRef.pause()
+        setIsVideoPlaying(false)
+      } else {
+        videoRef.play()
+        setIsVideoPlaying(true)
+      }
+    }
+  }
+
   const getHeroContent = () => {
-    const timeOfDay = isDarkMode ? "night" : "day"
     return {
       title: `WELCOME TO GLOBALBOX ${country.toUpperCase()}`,
       subtitle: "Connecting Global Commerce",
-      videoUrl: `/placeholder.svg?height=600&width=1400&query=${timeOfDay} marketplace hero video background`,
+      videoUrl: "/rainy-cloudy.mp4",
       backgroundGradient: isDarkMode
         ? "from-background/80 via-background/40 to-transparent"
         : "from-background/60 via-background/30 to-transparent",
@@ -36,15 +48,25 @@ export default function Hero({ country, isDarkMode }: HeroProps) {
     <section className="relative w-full h-screen max-h-[600px] overflow-hidden bg-gradient-to-b from-muted to-background">
       <div className="absolute inset-0">
         {/* Background Video/Image */}
-        <img
+        <video
+          ref={setVideoRef}
           src={content.videoUrl || "/placeholder.svg"}
-          alt="Hero background"
-          className="w-full h-full object-cover opacity-50 transition-opacity duration-500"
+          autoPlay
+          muted
+          loop
+          playsInline
+          onPlay={() => setIsVideoPlaying(true)}
+          onPause={() => setIsVideoPlaying(false)}
+          className="w-full h-full object-cover opacity-100 transition-opacity duration-500"
         />
 
         {/* Gradient Overlays */}
         <div className={`absolute inset-0 bg-gradient-to-t ${content.backgroundGradient}`}></div>
         <div className="absolute inset-0 bg-gradient-to-r from-background/40 via-transparent to-background/40"></div>
+        
+        {/* Top and Bottom Fade Overlays */}
+        {/* <div className="absolute top-0 left-0 right-0 h-16 bg-gradient-to-b from-background to-transparent"></div> */}
+        <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-background to-transparent"></div>
 
         {/* Animated Accent Elements */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-primary/10 rounded-full blur-3xl opacity-20 animate-pulse"></div>
@@ -60,7 +82,7 @@ export default function Hero({ country, isDarkMode }: HeroProps) {
           <h2 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-foreground animate-fade-in">
             {content.title}
           </h2>
-          <div className="h-1 w-24 bg-gradient-to-r from-primary to-accent mx-auto rounded-full"></div>
+          {/* <div className="h-1 w-24 bg-gradient-to-r from-primary to-accent mx-auto rounded-full"></div> */}
         </div>
 
         {/* Subtitle */}
@@ -89,16 +111,14 @@ export default function Hero({ country, isDarkMode }: HeroProps) {
         </div>
 
         {/* Video Control Badge */}
-        <div className="absolute bottom-8 right-8 flex items-center gap-2 bg-background/80 backdrop-blur-sm border border-border rounded-full px-4 py-2">
-          <button
-            onClick={() => setIsVideoPlaying(!isVideoPlaying)}
-            className="p-2 hover:bg-muted rounded-full transition-colors"
-            aria-label={isVideoPlaying ? "Pause video" : "Play video"}
-          >
-            {isVideoPlaying ? <Pause className="w-4 h-4 text-primary" /> : <Play className="w-4 h-4 text-primary" />}
-          </button>
+        <button
+          onClick={toggleVideo}
+          className="absolute bottom-8 right-8 flex items-center gap-2 bg-background/80 backdrop-blur-sm border border-border rounded-full px-4 py-2 hover:bg-background/90 transition-colors cursor-pointer"
+          aria-label={isVideoPlaying ? "Pause video" : "Play video"}
+        >
+          {isVideoPlaying ? <Pause className="w-4 h-4 text-primary" /> : <Play className="w-4 h-4 text-primary" />}
           <span className="text-xs font-medium text-muted-foreground">{isVideoPlaying ? "PLAYING" : "PAUSED"}</span>
-        </div>
+        </button>
       </div>
 
       <style jsx>{`

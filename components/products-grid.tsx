@@ -426,7 +426,7 @@ export default function ProductsGrid() {
               key={product.id}
               className="bg-card border border-border rounded-lg overflow-hidden hover:shadow-lg hover:border-primary/50 transition-all duration-300 group flex flex-col"
             >
-              <div className="px-6 pt-6 pb-3">
+              <div className="px-6 pt-4 pb-4">
                 <h3 className="text-center text-sm font-bold text-foreground line-clamp-1">{product.title}</h3>
               </div>
 

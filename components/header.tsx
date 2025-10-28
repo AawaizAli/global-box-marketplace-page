@@ -14,7 +14,7 @@ export default function Header({ country }: HeaderProps) {
   const { isDarkMode, toggleTheme } = useTheme()
 
   return (
-    <header className="sticky top-0 z-50 bg-background border-b border-border transition-colors duration-300">
+    <header className="sticky top-0 z-50 bg-background border-border transition-colors duration-300">
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Top Navigation */}
         <div className="flex items-center justify-between h-16">
